@@ -37,8 +37,6 @@ def getPresentPlan(request):
     ]
     """
     seq = {}
-    plan1 = dict(request.form)['plan']
-    print("plan>>",plan1)
     plan = json.loads(dict(request.form)['plan'])
     for act in plan:
         # We assume that only one action occurs at a time
