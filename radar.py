@@ -12,7 +12,7 @@ speech = Speak()
 
 # Should comment out this call to prevent initialization of radar db at ever
 # server restart.
-#dbCaller.initializeDatabase()
+dbCaller.initializeDatabase()
 
 @app.route("/")
 def index(exp=0, s=speech.getSpeechText('INTRO'), gs='Extinguish Big Fire At Byeng'):
@@ -37,13 +37,13 @@ def getPresentPlan(request):
     ]
     """
     seq = {}
-    plan = json.loads(dict(request.form)['plan'][0])
+    plan = json.loads(dict(request.form)['plan'])
     for act in plan:
         # We assume that only one action occurs at a time
         # TODO: Update code if we want to allow options for
         # two simultaneous actions (choices)
         seq[ act["y"] ] = act["name"]
-    print "\n======\n{0}\n======\n".format(seq)
+    print ("\n======\n{0}\n======\n".format(seq))
     return seq
 
 @app.route("/updateModels", methods=['GET','POST'])
@@ -66,7 +66,8 @@ def getOptimalPlan():
 
 @app.route("/validate", methods=['GET', 'POST'])
 def validate():
-    planner.savePlan() 
+    #print (request.data)
+    planner.savePlan()
     planner.getValidatedPlan(getPresentPlan(request))
     return index(s=speech.getSpeechText('VALIDATE_PLAN'))
 
@@ -118,4 +119,3 @@ def readPoliceStationResource():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5080)
-
