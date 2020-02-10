@@ -451,7 +451,7 @@ var63
 -1
 3
 Atom deployed_big_engines_rural()
-Atom has_big_engines_number_adminfire()
+Atom has_big_engines_number_mesafire()
 <none of those>
 end_variable
 begin_variable
@@ -3207,10 +3207,10 @@ deploy_ambulances_policechief_lukes_rural
 2
 end_operator
 begin_operator
-deploy_big_engines_firechief_adminfire_byeng 
+deploy_big_engines_firechief_mesafire_byeng 
 0
 6
-0 9 0 1
+0 17 0 1
 0 59 -1 0
 0 63 1 2
 0 69 -1 0
@@ -3219,10 +3219,10 @@ deploy_big_engines_firechief_adminfire_byeng
 4
 end_operator
 begin_operator
-deploy_big_engines_firechief_adminfire_lake 
+deploy_big_engines_firechief_mesafire_lake 
 0
 6
-0 9 0 1
+0 17 0 1
 0 60 -1 0
 0 63 1 2
 0 70 -1 0
@@ -3231,10 +3231,10 @@ deploy_big_engines_firechief_adminfire_lake
 4
 end_operator
 begin_operator
-deploy_big_engines_firechief_adminfire_marketplace 
+deploy_big_engines_firechief_mesafire_marketplace 
 0
 6
-0 9 0 1
+0 17 0 1
 0 61 -1 0
 0 63 1 2
 0 71 -1 0
@@ -3243,10 +3243,10 @@ deploy_big_engines_firechief_adminfire_marketplace
 4
 end_operator
 begin_operator
-deploy_big_engines_firechief_adminfire_mill 
+deploy_big_engines_firechief_mesafire_mill 
 0
 6
-0 9 0 1
+0 17 0 1
 0 62 -1 0
 0 63 1 2
 0 72 -1 0
@@ -3255,10 +3255,10 @@ deploy_big_engines_firechief_adminfire_mill
 4
 end_operator
 begin_operator
-deploy_big_engines_firechief_adminfire_rural 
+deploy_big_engines_firechief_mesafire_rural 
 0
 5
-0 9 0 1
+0 17 0 1
 0 63 1 0
 0 73 -1 0
 0 158 -1 0

@@ -15,7 +15,7 @@
 (:init
 (fire_at byeng)
 
-(=(total-cost) 0.0)
+(=(total-cost) 0)
 
 (not_needed_search_casualties lake )
 (not_needed_attend_casualties lake )
@@ -58,11 +58,11 @@
 (not_needed_active_local_alert transportchief )
 (not_needed_address_media )
 (has_small_engines_number adminfire)
-(has_big_engines_number adminfire)
 (has_ladders_number adminfire)
 (has_bulldozers_number adminfire)
 (has_helicopters_number adminfire)
 (has_rescuers_number adminfire)
+(has_big_engines_number mesafire)
 (has_ladders_number mesafire)
 (has_rescuers_number mesafire)
 (has_small_engines_number scottsfire)

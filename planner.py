@@ -4,14 +4,16 @@ import subprocess
 from shutil import copy as copyf
 from copy import deepcopy
 from problemFileMaker import problemFileMaker
+from model_parser.parser_new import parse_model
+from model_parser.writer_new import ModelWriter
+from model_parser.constants import *
 
 class Planner():
     CALL_FAST_DOWNWARD = 'planner/FAST-DOWNWARD/fast-downward.py '
     CALL_VAL = 'planner/VAL/validate -v '
-    CALL_PR2 = 'planner/PR2/pr2plan '
+    CALL_PR2 = 'planner/PR2/pr2plan'
 
     def __init__(self, domain='planner/domain.pddl', problem='planner/mock_problem.pddl', obs='planner/obs.dat'):
-
         # Domain and problem files
         self.domain = domain
         self.human_domain = 'planner/domain_human.pddl'
@@ -42,6 +44,9 @@ class Planner():
                     'joseph', 'lukes', 'apachestation', 'courtstation', 'substation']
 
         self.probMaker = problemFileMaker()
+        self.observations = ''
+        self.ungrounded_actions = []
+        self.consts = []
 
     def plan(self):
         try:
@@ -85,6 +90,8 @@ class Planner():
         f.write(s)
         f.close()
 
+
+
     def reconcileModels(self, changes):
         print( changes )
         changeHumanModel = []
@@ -112,34 +119,51 @@ class Planner():
             act_updates[ act ] = pre
 
         print( "Updating ...\nfile: {0}\nremove: {1}\nchanges: {2}".format(fname, remove, act_updates) )
-        f = open(fname, 'r')
-        s = ""
-        removePredicate = False
-        for l in f:
-            if removePredicate:
-                if prec in l:
-                    removePredicate = False
-                    continue
-            if '(:action ' in l:
-                act_name = l.split(':action ')[1].strip()
-                try:
-                    prec = act_updates[ act_name ]
-                    if remove:
-                        s += l
-                        removePredicate = True
-                    else:
-                        s += l
-                        s += prec + "\n"
-                except:
-                    s += l
-                    continue
-            else:
-                s += l
-        f.close()
-        f = open(fname.split('.pddl')[0]+'_modify.pddl', 'w')
-        f.write( s )
-        f.close()
-        print( "Updated '{0}'!".format(fname.split('.pddl')[0]+'_modify.pddl') )
+        print("Updating done")
+        # f = open(fname, 'r')
+        # s = ""
+        # removePredicate = False
+        # for l in f:
+        #     if removePredicate:
+        #         if prec in l:
+        #             removePredicate = False
+        #             continue
+        #     if '(:action ' in l:
+        #         act_name = l.split(':action ')[1].strip()
+        #         try:
+        #             prec = act_updates[ act_name ]
+        #             if remove:
+        #                 s += l
+        #                 removePredicate = True
+        #             else:
+        #                 s += l
+        #                 s += prec + "\n"
+        #         except:
+        #             s += l
+        #             continue
+        #     else:
+        #         s += l
+        # f.close()
+        # f = open(fname.split('.pddl')[0]+'_modify.pddl', 'w')
+        # f.write( s )
+        # f.close()
+        # print( "Updated '{0}'!".format(fname.split('.pddl')[0]+'_modify.pddl') )
+        # if remove:
+        #     self.domain = fname.split('.pddl')[0]+'_modify.pddl'
+        # else:
+        #     self.human_domain = fname.split('.pddl')[0]+'_modify.pddl'
+        model = parse_model(fname,self.problem)
+        for act in list(model[DOMAIN].keys()):
+            try:
+                prec = act_updates[act]
+                if remove:
+                    for precs in model[DOMAIN][act][POS_PREC]:
+                        if prec in precs:
+                            model[DOMAIN][act][POS_PREC].remove(precs)
+            except:
+                continue
+        writer = ModelWriter(model)
+        writer.write_files(fname.split('.pddl')[0]+'_modify.pddl','problem.pddl')
         if remove:
             self.domain = fname.split('.pddl')[0]+'_modify.pddl'
         else:
@@ -155,9 +179,10 @@ class Planner():
             copyf(self.pr_domain, self.val_pr_domain)
             copyf(self.pr_problem, self.val_pr_problem)
             try:
-                os.system('\n=====\ncat {0}\n======\n'.format(self.obs))
+                print('\n=====\n{0}\n======\n'.format(self.observations))
                 cmd = self.CALL_PR2 + ' -d ' + self.val_pr_domain + ' -i ' + self.val_pr_problem +' -o ' + self.obs
                 os.system(cmd)
+                print("PR2 DONE")
             except:
                 raise Exception('[ERROR] In Call to PR2!')
 
@@ -196,7 +221,9 @@ class Planner():
         except:
             print('[ERROR] Failed to execute VAL on given plan')
         if out:
+            out=out.decode()
             if 'Plan failed to execute' in out:
+                print(out.split("Plan Repair Advice:\n"))
                 faults = out.split("Plan Repair Advice:\n")[1].strip()
                 if ')' in faults:
                     action_name = faults.split(') ')[0].strip().upper() +")"
@@ -210,9 +237,10 @@ class Planner():
                         f.write(actions[k].strip() + '\n')
                 f.close()
 
+
     def getExplanations(self):
 
-        cmd = "cd planner/mmp_explanations/src && ./Problem.py -m {0} -n {1} -d ../domain/radar_domain_template.pddl -f ../../mock_problem.pddl".format(self.domain, self.human_domain)
+        cmd = "cd planner/mmp_explanations/src && ./Problem.py -m ../../../{0} -n ../../../{1} -d ../domain/radar_domain_template.pddl -f ../../mock_problem.pddl".format(self.domain, self.human_domain)
         try:
             os.system(cmd)
         except:
@@ -278,13 +306,14 @@ class Planner():
             os.system(cmd)
         except:
             raise Exception('[ERROR] Removing "EXPLAIN" from pr-domain and pr-problem files.')
-
-        actionNames = []
-        f = open(self.pr_domain)
-        for l in f:
-            if '(:action ' in l:
-                actionNames.append('(' + l.split('(:action ')[1].strip() +')')
-        return actionNames
+        pr_model = parse_model(self.pr_domain, self.pr_problem)
+        return list(pr_model[DOMAIN].keys())
+        # actionNames = []
+        # f = open(self.pr_domain)
+        # for l in f:
+        #     if '(:action ' in l:
+        #         actionNames.append('(' + l.split('(:action ')[1].strip() +')')
+        # return actionNames
 
     def savePlan(self):
         copyf(self.obs, self.saveduiPlan)
@@ -295,7 +324,7 @@ class Planner():
 
     def getImpResources(self):
         try:
-            f = open(selt.sas_plan, 'r')
+            f = open(self.sas_plan, 'r')
         except:
             # If no plan exists for the present state
             self.plan()
@@ -316,6 +345,7 @@ class Planner():
         for l in f:
             observations[ count ] = l.strip()
             count += 1
+
         return observations
 
     def definePlanningProblem(self, gs):
@@ -345,3 +375,15 @@ class Planner():
 
         f = open(self.problem, 'w')
         f.write(tempProblem)
+        f.close()
+        self.parsed_model = parse_model(self.domain, self.problem)
+        words = []
+        for action in list(self.parsed_model[DOMAIN].keys()):
+            for sub_word in action.split('_'):
+                words.append(sub_word)
+        self.ungrounded_actions = list(set(words))
+        constants = []
+        for i in self.parsed_model[CONSTANTS]:
+            for word in i:
+                constants.append(word)
+        self.consts = list(set(constants))

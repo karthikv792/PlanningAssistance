@@ -3,10 +3,10 @@
 	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/sticky-footer.css') }}">
-               
+
         <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/gridstack.css') }}">
-        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/gridstack-extra.css') }}">  
-        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.css"> 
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/gridstack-extra.css') }}">
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.css">
         <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.0/jquery-ui.js"></script>
@@ -18,12 +18,14 @@
         <script type= "text/javascript" src= "{{ url_for('static',filename='js/gridstack.jQueryUI.js') }}"></script>
         <script type= "text/javascript" src='https://code.responsivevoice.org/responsivevoice.js'></script>
         <script type= "text/javascript" src="{{ url_for('static',filename='js/responseVoice.js') }}"></script>
-
+    <script type="text/javascript" src="{{ url_for('static',filename='js/recorder.js')}}"></script>
+        <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
         <style type="text/css">
             .grid-stack-item-content {
                 color: #00050f;
                 text-align: center;
                 background-color: #b2c1e0;
+                font-family: 'Poppins', sans-serif;
             }
             .loader, .exploader {
                 left: 0px;
@@ -41,8 +43,8 @@
                 height: 30%;
             }
         </style>
-        
+
     </head>
-    <body>
+    <body style="font-family: 'Poppins', sans-serif;">
     <div class="loader" style="display:none;"></div>
-    <div class="page_content">	
+    <div class="page_content">

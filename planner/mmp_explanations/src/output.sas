@@ -427,7 +427,7 @@ Atom deployed_big_engines(lake)
 Atom deployed_big_engines(marketplace)
 Atom deployed_big_engines(mill)
 Atom deployed_big_engines(rural)
-Atom has_big_engines_number(adminfire)
+Atom has_big_engines_number(mesafire)
 end_variable
 begin_variable
 var60
@@ -1857,7 +1857,7 @@ var263
 Atom updated(transportchief)
 NegatedAtom updated(transportchief)
 end_variable
-5
+9
 begin_mutex_group
 6
 59 0
@@ -1876,6 +1876,26 @@ begin_mutex_group
 2
 120 0
 121 0
+end_mutex_group
+begin_mutex_group
+2
+120 0
+121 0
+end_mutex_group
+begin_mutex_group
+2
+120 0
+121 0
+end_mutex_group
+begin_mutex_group
+2
+121 0
+121 1
+end_mutex_group
+begin_mutex_group
+2
+121 0
+121 1
 end_mutex_group
 begin_mutex_group
 2
@@ -3172,10 +3192,10 @@ deploy_ambulances policechief lukes rural
 2
 end_operator
 begin_operator
-deploy_big_engines firechief adminfire byeng
+deploy_big_engines firechief mesafire byeng
 0
 5
-0 9 0 1
+0 17 0 1
 0 59 5 0
 0 65 -1 0
 0 150 -1 0
@@ -3183,10 +3203,10 @@ deploy_big_engines firechief adminfire byeng
 4
 end_operator
 begin_operator
-deploy_big_engines firechief adminfire lake
+deploy_big_engines firechief mesafire lake
 0
 5
-0 9 0 1
+0 17 0 1
 0 59 5 1
 0 66 -1 0
 0 151 -1 0
@@ -3194,10 +3214,10 @@ deploy_big_engines firechief adminfire lake
 4
 end_operator
 begin_operator
-deploy_big_engines firechief adminfire marketplace
+deploy_big_engines firechief mesafire marketplace
 0
 5
-0 9 0 1
+0 17 0 1
 0 59 5 2
 0 67 -1 0
 0 152 -1 0
@@ -3205,10 +3225,10 @@ deploy_big_engines firechief adminfire marketplace
 4
 end_operator
 begin_operator
-deploy_big_engines firechief adminfire mill
+deploy_big_engines firechief mesafire mill
 0
 5
-0 9 0 1
+0 17 0 1
 0 59 5 3
 0 68 -1 0
 0 153 -1 0
@@ -3216,10 +3236,10 @@ deploy_big_engines firechief adminfire mill
 4
 end_operator
 begin_operator
-deploy_big_engines firechief adminfire rural
+deploy_big_engines firechief mesafire rural
 0
 5
-0 9 0 1
+0 17 0 1
 0 59 5 4
 0 69 -1 0
 0 154 -1 0

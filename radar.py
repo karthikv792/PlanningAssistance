@@ -1,21 +1,26 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify,redirect
 from planner import Planner
 import json
 from dbHandler import dbHandler
 from speak import Speak
-
+import speech_recognition as sr
 app = Flask(__name__)
-
-dbCaller = dbHandler()
 planner = Planner()
+dbCaller = dbHandler()
+recognizer = sr.Recognizer()
 speech = Speak()
 
 # Should comment out this call to prevent initialization of radar db at ever
 # server restart.
-dbCaller.initializeDatabase()
+#dbCaller.initializeDatabase()
+
+# @app.route("/")
+# def index1():
+#     return render_template('index1.html')
 
 @app.route("/")
 def index(exp=0, s=speech.getSpeechText('INTRO'), gs='Extinguish Big Fire At Byeng'):
+
     planner.definePlanningProblem(gs)
     a = planner.getActionNames()
     g = ['Extinguish Big Fire At Byeng']#, 'Extinguish Small Fire At Byeng']
@@ -64,6 +69,32 @@ def getOptimalPlan():
     planner.getSuggestedPlan({})
     return index(s=speech.getSpeechText('OPTIMAL_PLAN'))
 
+@app.route("/foil",methods=['GET','POST'])
+def foil():
+    acts = planner.getOrderedObservations()
+    a = planner.getActionNames()
+    return render_template('foil.html',plan=acts,actions=a)
+
+@app.route("/foilrec",methods=['GET','POST'])
+def foilrec():
+    with open('service-account-file.json') as file:
+        GOOGLE_CREDENTIALS = file.read()
+    url = request.files['audio_data']
+    print("GOT DATA")
+
+    # url=url[5:]
+    # print(url)
+    # rawWav = requests.get(url,verify=False)
+    phrase_list= planner.ungrounded_actions+planner.consts
+    phrases = {"phrases":phrase_list}
+    wavFile = sr.AudioFile(url)
+    with wavFile as source:
+        #recognizer.adjust_for_ambient_noise(source)
+        audio = recognizer.record(source)
+    text = recognizer.recognize_google_cloud(audio, credentials_json=GOOGLE_CREDENTIALS,preferred_phrases=phrase_list)
+    print(text)
+    return text
+
 @app.route("/validate", methods=['GET', 'POST'])
 def validate():
     #print (request.data)
@@ -79,7 +110,7 @@ def getExplanationForPlan():
 @app.route("/updateResources", methods=['GET','POST'])
 def updateResources():
     d = dict(request.form)
-    dbCaller.updateResourcesInTable( d['resourceName'][0], d['tableName'][0], d['rowId'][0], d['presentState'][0] )
+    dbCaller.updateResourcesInTable( d['resourceName'], d['tableName'], d['rowId'], d['presentState'])
     return index(s=speech.getSpeechText('RESOURCE_UPDATED'))
 
 @app.route("/suggest", methods=['GET', 'POST'])
