@@ -4,6 +4,7 @@ import json
 from dbHandler import dbHandler
 from speak import Speak
 import speech_recognition as sr
+from foil_parser import get_actions
 app = Flask(__name__)
 planner = Planner()
 dbCaller = dbHandler()
@@ -60,7 +61,7 @@ def updateModels():
 def updateGoals():
     d = dict(request.form)
     print("=================")
-    print(d['option'][0])
+    print(d['option'])
     print("=================")
     return index(s=speech.getSpeechText('GOAL_SELECTED'),gs=d['option'][0])
 
@@ -71,29 +72,32 @@ def getOptimalPlan():
 
 @app.route("/foil",methods=['GET','POST'])
 def foil():
+    planner.loadPlan()
     acts = planner.getOrderedObservations()
     a = planner.getActionNames()
+
     return render_template('foil.html',plan=acts,actions=a)
 
 @app.route("/foilrec",methods=['GET','POST'])
 def foilrec():
+    acts = planner.getOrderedObservations()
+    action_list = [i for i in acts.values()]
+    print(action_list)
     with open('service-account-file.json') as file:
         GOOGLE_CREDENTIALS = file.read()
     url = request.files['audio_data']
-    print("GOT DATA")
-
-    # url=url[5:]
-    # print(url)
-    # rawWav = requests.get(url,verify=False)
     phrase_list= planner.ungrounded_actions+planner.consts
-    phrases = {"phrases":phrase_list}
     wavFile = sr.AudioFile(url)
     with wavFile as source:
         #recognizer.adjust_for_ambient_noise(source)
         audio = recognizer.record(source)
     text = recognizer.recognize_google_cloud(audio, credentials_json=GOOGLE_CREDENTIALS,preferred_phrases=phrase_list)
     print(text)
-    return text
+    why, why_not = get_actions(text,action_list)
+    actions = {}
+    actions['why'] = why
+    actions['whynot'] = why_not
+    return actions
 
 @app.route("/validate", methods=['GET', 'POST'])
 def validate():

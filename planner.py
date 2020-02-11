@@ -387,3 +387,4 @@ class Planner():
             for word in i:
                 constants.append(word)
         self.consts = list(set(constants))
+        print(self.ungrounded_actions+self.consts)
