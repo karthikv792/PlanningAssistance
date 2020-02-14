@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify,redirect
 from planner import Planner
 import json
+import re
 from dbHandler import dbHandler
 from speak import Speak
 import speech_recognition as sr
@@ -82,6 +83,9 @@ def foil():
 def foilrec():
     acts = planner.getOrderedObservations()
     action_list = [i for i in acts.values()]
+    actions = []
+    for i in action_list:
+        actions.append((re.sub('[(){}<>]', '', i)).replace(' ', ''))
     print(action_list)
     with open('service-account-file.json') as file:
         GOOGLE_CREDENTIALS = file.read()
@@ -93,11 +97,13 @@ def foilrec():
         audio = recognizer.record(source)
     text = recognizer.recognize_google_cloud(audio, credentials_json=GOOGLE_CREDENTIALS,preferred_phrases=phrase_list)
     print(text)
-    why, why_not = get_actions(text,action_list)
-    actions = {}
-    actions['why'] = why
-    actions['whynot'] = why_not
-    return actions
+    with open('nlp_foils.txt','a') as nlp:
+        nlp.write(text+'\n')
+    why, why_not = get_actions(text,actions)
+    actions1 = {}
+    actions1['why'] = why
+    actions1['whynot'] = why_not
+    return actions1
 
 @app.route("/validate", methods=['GET', 'POST'])
 def validate():

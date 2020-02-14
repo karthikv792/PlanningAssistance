@@ -17,7 +17,7 @@
 (fire_at byeng)
 (small_fire_at byeng)
 
-(=(total-cost) 0.0)
+(=(total-cost) 0)
 
 ( not_needed_search_casualties marketplace )
 ( not_needed_attend_casualties marketplace )
