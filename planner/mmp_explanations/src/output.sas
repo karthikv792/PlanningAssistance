@@ -1857,7 +1857,7 @@ var263
 Atom updated(transportchief)
 NegatedAtom updated(transportchief)
 end_variable
-9
+5
 begin_mutex_group
 6
 59 0
@@ -1876,26 +1876,6 @@ begin_mutex_group
 2
 120 0
 121 0
-end_mutex_group
-begin_mutex_group
-2
-120 0
-121 0
-end_mutex_group
-begin_mutex_group
-2
-120 0
-121 0
-end_mutex_group
-begin_mutex_group
-2
-121 0
-121 1
-end_mutex_group
-begin_mutex_group
-2
-121 0
-121 1
 end_mutex_group
 begin_mutex_group
 2

@@ -14,7 +14,7 @@ speech = Speak()
 
 # Should comment out this call to prevent initialization of radar db at ever
 # server restart.
-#dbCaller.initializeDatabase()
+dbCaller.initializeDatabase()
 
 # @app.route("/")
 # def index1():
@@ -96,15 +96,18 @@ def foilrec():
         #recognizer.adjust_for_ambient_noise(source)
         audio = recognizer.record(source)
     text = recognizer.recognize_google_cloud(audio, credentials_json=GOOGLE_CREDENTIALS,preferred_phrases=phrase_list)
-    print(text)
     with open('nlp_foils.txt','a') as nlp:
         nlp.write(text+'\n')
     why, why_not = get_actions(text,actions)
     actions1 = {}
-    actions1['why'] = why
-    actions1['whynot'] = why_not
+    actions1['text1'] = text
+    actions1['why_action'] = why
+    actions1['whynot_action'] = why_not
     return actions1
-
+@app.route("/dummy",methods=['GET','POST'])
+def dummy():
+    actions1 = {'text1':'asdf','why_action':['a','b'],'whynot_action':['c','d']}
+    return actions1
 @app.route("/validate", methods=['GET', 'POST'])
 def validate():
     #print (request.data)

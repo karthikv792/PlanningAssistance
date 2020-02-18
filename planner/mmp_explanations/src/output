@@ -268,17 +268,7 @@ var8
 Atom addressed_media()
 NegatedAtom addressed_media()
 end_variable
-4
-begin_mutex_group
 2
-9 0
-8 0
-end_mutex_group
-begin_mutex_group
-2
-9 0
-8 0
-end_mutex_group
 begin_mutex_group
 2
 9 0
