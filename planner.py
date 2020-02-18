@@ -96,14 +96,14 @@ class Planner():
         print( changes )
         changeHumanModel = []
         changeRobotModel = []
-        for key in changes.keys():
+        for key in list(changes.keys()):
             if '-reject' in key:
                 act = key.split('-reject')[0]
                 changeRobotModel.append( act )
                 changes.pop( key, None )
                 changes.pop( act, None )
 
-        for key in changes.keys():
+        for key in list(changes.keys()):
             changeHumanModel.append( key )
 
         self.updateDomainFile(self.domain.split('.pddl')[0]+'_human.pddl', changeHumanModel)
@@ -120,50 +120,50 @@ class Planner():
 
         print( "Updating ...\nfile: {0}\nremove: {1}\nchanges: {2}".format(fname, remove, act_updates) )
         print("Updating done")
-        # f = open(fname, 'r')
-        # s = ""
-        # removePredicate = False
-        # for l in f:
-        #     if removePredicate:
-        #         if prec in l:
-        #             removePredicate = False
-        #             continue
-        #     if '(:action ' in l:
-        #         act_name = l.split(':action ')[1].strip()
-        #         try:
-        #             prec = act_updates[ act_name ]
-        #             if remove:
-        #                 s += l
-        #                 removePredicate = True
-        #             else:
-        #                 s += l
-        #                 s += prec + "\n"
-        #         except:
-        #             s += l
-        #             continue
-        #     else:
-        #         s += l
-        # f.close()
-        # f = open(fname.split('.pddl')[0]+'_modify.pddl', 'w')
-        # f.write( s )
-        # f.close()
-        # print( "Updated '{0}'!".format(fname.split('.pddl')[0]+'_modify.pddl') )
-        # if remove:
-        #     self.domain = fname.split('.pddl')[0]+'_modify.pddl'
-        # else:
-        #     self.human_domain = fname.split('.pddl')[0]+'_modify.pddl'
-        model = parse_model(fname,self.problem)
-        for act in list(model[DOMAIN].keys()):
-            try:
-                prec = act_updates[act]
-                if remove:
-                    for precs in model[DOMAIN][act][POS_PREC]:
-                        if prec in precs:
-                            model[DOMAIN][act][POS_PREC].remove(precs)
-            except:
-                continue
-        writer = ModelWriter(model)
-        writer.write_files(fname.split('.pddl')[0]+'_modify.pddl','problem.pddl')
+        f = open(fname, 'r')
+        s = ""
+        removePredicate = False
+        for l in f:
+            if removePredicate:
+                if prec in l:
+                    removePredicate = False
+                    continue
+            if '(:action ' in l:
+                act_name = l.split(':action ')[1].strip()
+                try:
+                    prec = act_updates[ act_name ]
+                    if remove:
+                        s += l
+                        removePredicate = True
+                    else:
+                        s += l
+                        s += prec + "\n"
+                except:
+                    s += l
+                    continue
+            else:
+                s += l
+        f.close()
+        f = open(fname.split('.pddl')[0]+'_modify.pddl', 'w')
+        f.write( s )
+        f.close()
+        print( "Updated '{0}'!".format(fname.split('.pddl')[0]+'_modify.pddl') )
+        if remove:
+            self.domain = fname.split('.pddl')[0]+'_modify.pddl'
+        else:
+            self.human_domain = fname.split('.pddl')[0]+'_modify.pddl'
+        # model = parse_model(fname,self.problem)
+        # for act in list(model[DOMAIN].keys()):
+        #     try:
+        #         prec = act_updates[act]
+        #         if remove:
+        #             for precs in model[DOMAIN][act][POS_PREC]:
+        #                 if prec in precs:
+        #                     model[DOMAIN][act][POS_PREC].remove(precs)
+        #     except:
+        #         continue
+        # writer = ModelWriter(model)
+        # writer.write_files(fname.split('.pddl')[0]+'_modify.pddl','problem.pddl')
         if remove:
             self.domain = fname.split('.pddl')[0]+'_modify.pddl'
         else:
@@ -376,7 +376,7 @@ class Planner():
         f = open(self.problem, 'w')
         f.write(tempProblem)
         f.close()
-        self.parsed_model = parse_model(self.domain, self.problem)
+        self.parsed_model = parse_model('planner/domain1.pddl', self.problem)
         words = []
         for action in list(self.parsed_model[DOMAIN].keys()):
             for sub_word in action.split('_'):

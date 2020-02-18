@@ -3363,7 +3363,6 @@
 		:precondition
 		(and
 			( HAS_BIG_ENGINES_NUMBER_MESAFIRE )
-			( ALERTED_MESAFIRE )
 		)
 		:effect
 		(and
@@ -3381,7 +3380,6 @@
 		:precondition
 		(and
 			( HAS_BIG_ENGINES_NUMBER_MESAFIRE )
-			( ALERTED_MESAFIRE )
 		)
 		:effect
 		(and
@@ -3399,7 +3397,6 @@
 		:precondition
 		(and
 			( HAS_BIG_ENGINES_NUMBER_MESAFIRE )
-			( ALERTED_MESAFIRE )
 		)
 		:effect
 		(and
@@ -3417,7 +3414,6 @@
 		:precondition
 		(and
 			( HAS_BIG_ENGINES_NUMBER_MESAFIRE )
-			( ALERTED_MESAFIRE )
 		)
 		:effect
 		(and
@@ -3435,7 +3431,6 @@
 		:precondition
 		(and
 			( HAS_BIG_ENGINES_NUMBER_MESAFIRE )
-			( ALERTED_MESAFIRE )
 		)
 		:effect
 		(and

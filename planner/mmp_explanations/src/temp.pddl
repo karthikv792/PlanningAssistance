@@ -93,18 +93,15 @@
 :parameters (?a - fire ?from - firestation ?to - pois)
 :precondition
 (and
-( alerted ?from )
 ( has_small_engines_number ?from )
 )
 :effect
 (and
-( needed_barricade ?to )
 ( deployed_small_engines ?to )
 ( deployed_engines ?to )
 ( increase (total-cost) (duration_deploy_small_engines) )
 (not ( has_small_engines_number ?from ))
 (not ( alerted ?from ))
-(not ( not_needed_barricade ?to ))
 )
 )
 
@@ -112,14 +109,14 @@
 :parameters (?a - agents)
 :precondition
 (and
-( needed_address_media )
 ( media_contacted ?a )
+( needed_address_media )
 )
 :effect
 (and
+( not_needed_address_media )
 ( addressed_media )
 ( increase (total-cost) (duration_address_media) )
-( not_needed_address_media )
 (not ( needed_address_media ))
 )
 )
@@ -128,16 +125,16 @@
 :parameters (?a - fire ?at - pois)
 :precondition
 (and
-( deployed_big_engines ?at )
 ( fire_at ?at )
+( deployed_big_engines ?at )
 )
 :effect
 (and
-( increase (total-cost) (duration_extinguish_big_fire) )
-( extinguished_fire ?at )
 ( needed_search_casualties ?at )
-(not ( not_needed_search_casualties ?at ))
+( extinguished_fire ?at )
+( increase (total-cost) (duration_extinguish_big_fire) )
 (not ( fire_at ?at ))
+(not ( not_needed_search_casualties ?at ))
 )
 )
 
@@ -145,35 +142,37 @@
 :parameters (?a - transport ?from - location ?to - location)
 :precondition
 (and
-( positioned_policemen ?from )
 ( active_local_alert ?a )
-( positioned_policemen ?to )
+( positioned_policemen ?from )
 ( deployed_police_cars ?from )
+( positioned_policemen ?to )
 ( deployed_police_cars ?to )
 )
 :effect
 (and
+( increase (total-cost) (duration_block_road) )
 ( needed_active_local_alert ?a )
 ( needed_diverted_traffic ?from ?to )
-( increase (total-cost) (duration_block_road) )
 ( blocked_road ?from ?to )
 (not ( not_needed_diverted_traffic ?from ?to ))
 (not ( not_needed_active_local_alert ?a ))
 )
 )
 
-(:action position_policemen
-:parameters (?a - police ?from - policestation ?to - pois)
+(:action barricade
+:parameters (?a - fire ?at - pois)
 :precondition
 (and
-( alerted ?from )
-( has_policemen_number ?from )
+( deployed_engines ?at )
 )
 :effect
 (and
-( increase (total-cost) (duration_position_policemen) )
-( positioned_policemen ?to )
-(not ( alerted ?from ))
+( not_needed_barricade ?at )
+( barricaded ?at )
+( increase (total-cost) (duration_barricade) )
+( needed_active_local_alert ?a )
+(not ( needed_barricade ?at ))
+(not ( not_needed_active_local_alert ?a ))
 )
 )
 
@@ -201,8 +200,8 @@
 )
 :effect
 (and
-( active_local_alert ?a )
 ( not_needed_active_local_alert ?a )
+( active_local_alert ?a )
 ( increase (total-cost) (duration_issue_local_alert) )
 (not ( needed_active_local_alert ?a ))
 )
@@ -217,10 +216,10 @@
 )
 :effect
 (and
-( increase (total-cost) (duration_deploy_helicopters) )
 ( deployed_helicopters ?to )
-(not ( has_helicopters_number ?from ))
+( increase (total-cost) (duration_deploy_helicopters) )
 (not ( alerted ?from ))
+(not ( has_helicopters_number ?from ))
 )
 )
 
@@ -228,8 +227,8 @@
 :parameters (?a - fire ?from - firestation ?to - pois)
 :precondition
 (and
-( has_rescuers_number ?from )
 ( alerted ?from )
+( has_rescuers_number ?from )
 )
 :effect
 (and
@@ -248,26 +247,25 @@
 )
 :effect
 (and
-( increase (total-cost) (duration_unit_actions) )
 ( updated ?a )
+( increase (total-cost) (duration_unit_actions) )
 
 )
 )
 
-(:action evacuate
-:parameters (?a - police ?from - location ?to - location)
+(:action deploy_police_cars
+:parameters (?a - police ?from - policestation ?to - pois)
 :precondition
 (and
-( positioned_policemen ?from )
-( prepared_evacuation ?from )
-( blocked_road ?from ?to )
-( deployed_police_cars ?from )
+( has_police_car_number ?from )
+( alerted ?from )
 )
 :effect
 (and
-( evacuated ?from ?to )
-( increase (total-cost) (duration_evacuation) )
-
+( deployed_police_cars ?to )
+( increase (total-cost) (duration_deploy_police_cars) )
+(not ( has_police_car_number ?from ))
+(not ( alerted ?from ))
 )
 )
 
@@ -293,8 +291,8 @@
 )
 :effect
 (and
-( increase (total-cost) (duration_contact_media) )
 ( media_contacted ?a )
+( increase (total-cost) (duration_contact_media) )
 
 )
 )
@@ -303,36 +301,37 @@
 :parameters (?a - fire ?at - pois)
 :precondition
 (and
-( deployed_engines ?at )
-( small_fire_at ?at )
 ( fire_at ?at )
+( small_fire_at ?at )
+( deployed_engines ?at )
 )
 :effect
 (and
-( extinguished_fire ?at )
-( increase (total-cost) (duration_extinguish_small_fire) )
-( needed_search_casualties ?at )
 ( needed_address_media )
-(not ( not_needed_address_media ))
-(not ( not_needed_search_casualties ?at ))
-(not ( fire_at ?at ))
+( extinguished_fire ?at )
+( needed_search_casualties ?at )
+( increase (total-cost) (duration_extinguish_small_fire) )
 (not ( small_fire_at ?at ))
+(not ( not_needed_search_casualties ?at ))
+(not ( not_needed_address_media ))
+(not ( fire_at ?at ))
 )
 )
 
-(:action deploy_police_cars
-:parameters (?a - police ?from - policestation ?to - pois)
+(:action evacuate
+:parameters (?a - police ?from - location ?to - location)
 :precondition
 (and
-( has_police_car_number ?from )
-( alerted ?from )
+( prepared_evacuation ?from )
+( blocked_road ?from ?to )
+( deployed_police_cars ?from )
+( positioned_policemen ?from )
 )
 :effect
 (and
-( increase (total-cost) (duration_deploy_police_cars) )
-( deployed_police_cars ?to )
-(not ( has_police_car_number ?from ))
-(not ( alerted ?from ))
+( increase (total-cost) (duration_evacuation) )
+( evacuated ?from ?to )
+
 )
 )
 
@@ -346,8 +345,8 @@
 :effect
 (and
 ( traffic_diverted ?from ?to )
-( increase (total-cost) (duration_unit_actions) )
 ( not_needed_diverted_traffic ?from ?to )
+( increase (total-cost) (duration_unit_actions) )
 (not ( needed_diverted_traffic ?from ?to ))
 )
 )
@@ -356,15 +355,15 @@
 :parameters (?a - fire ?from - firestation ?to - pois)
 :precondition
 (and
-( has_bulldozers_number ?from )
 ( alerted ?from )
+( has_bulldozers_number ?from )
 )
 :effect
 (and
-( deployed_bulldozers ?to )
 ( increase (total-cost) (duration_deploy_bulldozers) )
-(not ( has_bulldozers_number ?from ))
+( deployed_bulldozers ?to )
 (not ( alerted ?from ))
+(not ( has_bulldozers_number ?from ))
 )
 )
 
@@ -372,16 +371,16 @@
 :parameters (?a - fire ?at - pois)
 :precondition
 (and
-( deployed_helicopters ?at )
-( extinguished_fire ?at )
-( deployed_bulldozers ?at )
 ( deployed_rescuers ?at )
+( deployed_bulldozers ?at )
+( extinguished_fire ?at )
+( deployed_helicopters ?at )
 )
 :effect
 (and
+( needed_address_media )
 ( searched ?at )
 ( needed_attend_casualties ?at )
-( needed_address_media )
 ( increase (total-cost) (duration_search_casualties) )
 (not ( not_needed_address_media ))
 (not ( not_needed_attend_casualties ?at ))
@@ -396,8 +395,8 @@
 )
 :effect
 (and
-( increase (total-cost) (duration_set_up_helpline) )
 ( active_helpline ?a )
+( increase (total-cost) (duration_set_up_helpline) )
 
 )
 )
@@ -412,28 +411,26 @@
 :effect
 (and
 ( attended_casualties ?at )
+( needed_address_media )
 ( increase (total-cost) (duration_attend_casualties) )
 ( not_needed_attend_casualties ?at )
-( needed_address_media )
 (not ( not_needed_address_media ))
 (not ( needed_attend_casualties ?at ))
 )
 )
 
-(:action barricade
-:parameters (?a - fire ?at - pois)
+(:action position_policemen
+:parameters (?a - police ?from - policestation ?to - pois)
 :precondition
 (and
-( deployed_engines ?at )
+( alerted ?from )
+( has_policemen_number ?from )
 )
 :effect
 (and
-( needed_active_local_alert ?a )
-( increase (total-cost) (duration_barricade) )
-( barricaded ?at )
-( not_needed_barricade ?at )
-(not ( needed_barricade ?at ))
-(not ( not_needed_active_local_alert ?a ))
+( positioned_policemen ?to )
+( increase (total-cost) (duration_position_policemen) )
+(not ( alerted ?from ))
 )
 )
 
@@ -446,12 +443,10 @@
 )
 :effect
 (and
-( needed_barricade ?to )
-( deployed_big_engines ?to )
 ( deployed_engines ?to )
 ( increase (total-cost) (duration_deploy_big_engines) )
+( deployed_big_engines ?to )
 (not ( alerted ?from ))
-(not ( not_needed_barricade ?to ))
 (not ( has_big_engines_number ?from ))
 )
 )
@@ -464,8 +459,8 @@
 )
 :effect
 (and
-( prepared_evacuation ?from )
 ( increase (total-cost) (duration_prepare_evacuation) )
+( prepared_evacuation ?from )
 
 )
 )
@@ -474,14 +469,14 @@
 :parameters (?a - fire ?from - firestation ?to - pois)
 :precondition
 (and
-( alerted ?from )
 ( deployed_big_engines ?to )
+( alerted ?from )
 ( has_ladders_number ?from )
 )
 :effect
 (and
-( deployed_ladders ?to )
 ( increase (total-cost) (duration_deploy_ladders) )
+( deployed_ladders ?to )
 (not ( alerted ?from ))
 (not ( has_ladders_number ?from ))
 )

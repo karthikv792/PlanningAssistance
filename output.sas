@@ -3210,7 +3210,7 @@ begin_operator
 deploy_big_engines_firechief_mesafire_byeng 
 0
 6
-0 17 0 1
+0 17 -1 1
 0 59 -1 0
 0 63 1 2
 0 69 -1 0
@@ -3222,7 +3222,7 @@ begin_operator
 deploy_big_engines_firechief_mesafire_lake 
 0
 6
-0 17 0 1
+0 17 -1 1
 0 60 -1 0
 0 63 1 2
 0 70 -1 0
@@ -3234,7 +3234,7 @@ begin_operator
 deploy_big_engines_firechief_mesafire_marketplace 
 0
 6
-0 17 0 1
+0 17 -1 1
 0 61 -1 0
 0 63 1 2
 0 71 -1 0
@@ -3246,7 +3246,7 @@ begin_operator
 deploy_big_engines_firechief_mesafire_mill 
 0
 6
-0 17 0 1
+0 17 -1 1
 0 62 -1 0
 0 63 1 2
 0 72 -1 0
@@ -3258,7 +3258,7 @@ begin_operator
 deploy_big_engines_firechief_mesafire_rural 
 0
 5
-0 17 0 1
+0 17 -1 1
 0 63 1 0
 0 73 -1 0
 0 158 -1 0

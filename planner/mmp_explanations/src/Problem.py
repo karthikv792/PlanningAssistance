@@ -44,7 +44,7 @@ class Problem:
         with open(self.groundedRobotPlanFile, 'w') as plan_file:
             plan_file.write('\n'.join(['({})'.format(item) for item in self.plan]) + '\n; cost = {} (unit cost)'.format(self.cost))
 
-	tr_domain = '../../mmp/src/tr-domain.pddl'
+	tr_domain = '../../mmp_explanations/src/tr-domain.pddl'
         self.ground_state = read_state_from_domain_file(tr_domain)
         
         ground(humanModelFile, problemFile)
