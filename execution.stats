@@ -1,5 +1,5 @@
-Domain=RADAR
-Problem=BYENG
-Preprocessing=0.00566
+Domain=GROUNDED-RADAR
+Problem=GROUNDED-BYENG
+Preprocessing=0.019
 Fluents=271
 Operators=295

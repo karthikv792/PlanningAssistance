@@ -4,13 +4,18 @@ import json
 import re
 from dbHandler import dbHandler
 from speak import Speak
+#REMEMBER TO CHANGE speechContext to speechContexts
 import speech_recognition as sr
+#from google.oauth2 import service_account
 from foil_parser import get_actions
 app = Flask(__name__)
 planner = Planner()
 dbCaller = dbHandler()
 recognizer = sr.Recognizer()
 speech = Speak()
+#path = "service-account-file.json"
+#credentials = service_account.Credentials.from_service_account_file(path,scopes=["https://www.googleapis.com/auth/cloud-platform"],)
+
 
 # Should comment out this call to prevent initialization of radar db at ever
 # server restart.
@@ -64,7 +69,7 @@ def updateGoals():
     print("=================")
     print(d['option'])
     print("=================")
-    return index(s=speech.getSpeechText('GOAL_SELECTED'),gs=d['option'][0])
+    return index(s=speech.getSpeechText('GOAL_SELECTED'),gs=d['option'])
 
 @app.route("/generateAlternative", methods=['GET','POST'])
 def getOptimalPlan():
@@ -104,10 +109,17 @@ def foilrec():
     actions1['why_action'] = why
     actions1['whynot_action'] = why_not
     return actions1
-@app.route("/dummy",methods=['GET','POST'])
-def dummy():
-    actions1 = {'text1':'asdf','why_action':['a','b'],'whynot_action':['c','d']}
-    return actions1
+# @app.route("/dummy",methods=['GET','POST'])
+# def dummy():
+#     actions1 = {'text1':'asdf','why_action':['a','b'],'whynot_action':['c','d']}
+#     return actions1
+
+@app.route("/validateFoil",methods=['GET','POST'])
+def validateFoil():
+    planner.validateFoil(getPresentPlan(request))
+    return 'ab'
+
+
 @app.route("/validate", methods=['GET', 'POST'])
 def validate():
     #print (request.data)

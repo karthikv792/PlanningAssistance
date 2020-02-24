@@ -9,13 +9,19 @@
     </div>
     <div class="panel-body">
         <div class='col-md-9'>
-            <select class="form-control" id="actionToAdd">
+            <select class="form-control" id="actionToAdd1">
             {% for act in actions %}
                     <option>{{act}}</option>
             {% endfor %}
             </select>
         </div>
-        <button type="button" class="col-md-3 btn btn-primary addAction">Add</button>
+        <button type="button" class="col-md-3 btn btn-primary addAction1">Add</button>
+
+        <br>
+        <br>
+        <div class="col-md-3" style="padding:5px;">
+            <button type="button" class="col-md-12 btn btn-secondary validateFoil"><img src="{{ url_for('static',filename='images/validate.png') }}" height="35" alt="validate"><br>Validate</button>
+        </div>
     </div>
 </div>
 <div class="grid-stack" id="gs1"></div>
@@ -54,6 +60,26 @@
 </div>
 {% include 'footer.html' %}
 <script type="text/javascript">
+$.extend(
+{
+    redirectPost: function(location, args)
+    {
+        var form = $('<form></form>');
+        form.attr("method", "post");
+        form.attr("action", location);
+
+        $.each( args, function( key, value ) {
+            var field = $('<input></input>');
+
+            field.attr("type", "hidden");
+            field.attr("name", key);
+            field.attr("value", value);
+
+            form.append(field);
+        });
+        $(form).appendTo('body').submit();
+    }
+});
     $(function () {
         //SPEECH RECOGNITION -------------------
                 var audio_context;
@@ -68,15 +94,20 @@
       window.AudioContext = window.AudioContext || window.webkitAudioContext;
       navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
       window.URL = window.URL || window.webkitURL;
-
-
-
       audio_context = new AudioContext;
     } catch (e) {
       alert('No web audio support in this browser!');
     }
     navigator.getUserMedia({audio: true},startUserMedia,function(e) {
       console.log('No live audio input: ' + e);
+    });
+
+    $('.validateFoil').click(function (){
+      res = getGridStackData();
+      $('.page_content').fadeOut();
+      $('.loader').fadeIn();
+      //$.redirectPost('validate', JSON.stringify({'plan': res}));
+      $.redirectPost('validateFoil', {'plan': JSON.stringify(res)});
     });
         $('#startbtn').click(function () {
          recorder.record();
@@ -159,8 +190,8 @@
             xhr.send(fd);
     });
         //------------------------------SPEECH RECOGNITION
-        $('.addAction').click(function() {
-            var action = $('#actionToAdd').val();
+        $('.addAction1').click(function() {
+            var action = $('#actionToAdd1').val();
             console.log(action);
             updateData(action);
         });
